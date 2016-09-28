@@ -163,9 +163,11 @@ module.exports = (opts) ->
     transform_entries = (types) ->
       W.map types, (t) =>
         if t.transform
-          W.map t.content, (entry) =>
+          transformed = W.map t.content, (entry) =>
             W(entry, t.transform)
-        W.resolve(t)
+          transformed.then -> W.resolve(t)
+        else
+          W.resolve(t)
 
     ###*
      * Sort every type content with the user provided callback
