@@ -63,7 +63,7 @@ module.exports = (opts) ->
         if not t.id then return W.reject(errors.no_type_id)
         t.filters ?= {}
         if (not t.name || (t.template && not t.path))
-          return W client.contentType(t.id).then (res) ->
+          return W client.getContentType(t.id).then (res) ->
             t.name ?= pluralize(S(res.name).toLowerCase().underscore().s)
             if t.template
               t.path ?= (e) -> "#{t.name}/#{S(e[res.displayField]).slugify().s}"
@@ -105,7 +105,7 @@ module.exports = (opts) ->
 
     fetch_content = (type) ->
       W(
-        client.entries(
+        client.getEntries(
           _.merge(type.filters, content_type: type.id, include: 10)
         )
       )
@@ -116,7 +116,7 @@ module.exports = (opts) ->
      * @return {Promise} - returns formatted content type entries object
     ###
 
-    format_content = (content) -> W.map(content, format_entry)
+    format_content = (content) -> W.map(content.items, format_entry)
 
     ###*
      * Formats a single entry object from Contentful API response
